@@ -6,8 +6,9 @@
 ###################################################################
 
 PROJECT? = Example-Project
-TOP_LEVEL_ENTITY = top_level
-ASSIGNMENT_FILES = $(PROJECT).qpf $(PROJECT).qsf
+TOP? = top_level
+SRC? = fpga
+ASSIGNMENT_FILES = $(PROJECT).qpf $(PROJECT).qsf 
 
 ###################################################################
 # Part, Family, Boardfile DE1 or DE2
@@ -23,11 +24,11 @@ endif
 
 ###################################################################
 # Setup your sources here
-SRCS = $(wildcard ../fpga/*.sv) \
-  $(wildcard ../fpga/*.v) \
-  $(wildcard ../fpga/*.vhdl) \
-  $(wildcard ../fpga/*.vhd) \
-  $(wildcard ../fpga/*.qsys)
+SRCS = $(wildcard ../$(SRC)/*.sv) \
+  $(wildcard ../$(SRC)/*.v) \
+  $(wildcard ../$(SRC)/*.vhdl) \
+  $(wildcard ../$(SRC)/*.vhd) \
+  $(wildcard ../$(SRC)/*.qsys)
 
 ###################################################################
 # Main Targets
@@ -38,7 +39,6 @@ SRCS = $(wildcard ../fpga/*.sv) \
 ###################################################################
 
 all: smart.log $(PROJECT).asm.rpt $(PROJECT).sta.rpt 
-	echo $(BOARD)
 
 clean:
 	$(RM) -rf *.rpt *.chg smart.log *.htm *.eqn *.pin *.sof *.pof db incremental_db *.summary *.smsg *.jdi $(ASSIGNMENT_FILES)
@@ -106,8 +106,9 @@ smart.log: $(ASSIGNMENT_FILES)
 ###################################################################
 
 $(ASSIGNMENT_FILES):
-	$(QUARTUS_SH) $(SH_ARGS) --prepare -f $(FAMILY) -t $(TOP_LEVEL_ENTITY) $(PROJECT)
+	$(QUARTUS_SH) $(SH_ARGS) --prepare -f $(FAMILY) -t $(TOP) $(PROJECT)
 	-cat $(BOARDFILE) >> $(PROJECT).qsf
+	-echo $(TOP) > top.level
 map.chg:
 	$(STAMP) map.chg
 fit.chg:
