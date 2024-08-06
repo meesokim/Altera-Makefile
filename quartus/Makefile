@@ -5,15 +5,20 @@
 # Settings File (.qsf)
 ###################################################################
 
-PROJECT = Example-Project
+PROJECT? = Example-Project
 TOP_LEVEL_ENTITY = top_level
 ASSIGNMENT_FILES = $(PROJECT).qpf $(PROJECT).qsf
 
 ###################################################################
 # Part, Family, Boardfile DE1 or DE2
-FAMILY = "Cyclone II"
-PART = EP2C35F672C6
-BOARDFILE = DE2Pins
+# FAMILY = "Cyclone II"
+# PART = EP2C35F672C6
+# BOARDFILE = DE2Pins
+BOARD? = DE0
+
+ifeq ($(BOARD),DE0)
+	include DE0.mk
+endif 
 ###################################################################
 
 ###################################################################
@@ -33,6 +38,7 @@ SRCS = $(wildcard ../fpga/*.sv) \
 ###################################################################
 
 all: smart.log $(PROJECT).asm.rpt $(PROJECT).sta.rpt 
+	echo $(BOARD)
 
 clean:
 	$(RM) -rf *.rpt *.chg smart.log *.htm *.eqn *.pin *.sof *.pof db incremental_db *.summary *.smsg *.jdi $(ASSIGNMENT_FILES)
